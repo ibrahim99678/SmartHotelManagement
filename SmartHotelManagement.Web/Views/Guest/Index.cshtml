@@ -1,0 +1,80 @@
+﻿@using SmartHotelManagement.Model
+@model IEnumerable<Guest>
+
+@{
+    ViewData["HeaderTitle"]="Guests";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Guests List";
+}
+
+<div class="row">
+    <div class="col">
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <a class="btn btn-primary mb-3" asp-action="Create">Add Guest</a>
+        </h3>
+    </div>
+    <div class="card-body">
+        <style>
+            #GuestDataTable th,
+            #GuestDataTable td{
+                vertical-align:middle!important;
+                text-align:center;
+            }
+        </style>
+        <table id="GuestDataTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th style="width:220px">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                                    <img src="@(!string.IsNullOrEmpty(item.GuestImage) ? item.GuestImage : "/images/no-image.png")"
+                                         style="width:60px;height:60px;border-radius:8px;object-fit:cover;" />
+                     
+                        </td>
+                        <td>@item.FirstName @item.LastName</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Email</td>
+                        <td>@(item.IsActive ? "Active" : "Inactive")</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GuestId">Edit</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.GuestId">Delete</a>
+                            <a class="btn btn-sm btn-info" asp-action="ViewDetails" asp-route-id="@item.GuestId">View Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+ </div>
+</div>
+
+@section Scripts{
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script>
+            $("#GuestDataTable").DataTable({
+          "responsive": true,
+          "autoWidth": false,
+        });
+    </script>
+}

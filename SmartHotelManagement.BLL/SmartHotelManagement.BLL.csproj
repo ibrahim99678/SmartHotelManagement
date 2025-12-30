@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SmartHotelManagement.Contract\SmartHotelManagement.Contract.csproj" />
+    <ProjectReference Include="..\SmartHotelManagement.DAL\SmartHotelManagement.DAL.csproj" />
+    <ProjectReference Include="..\SmartHotelManagement.Model\SmartHotelManagement.Model.csproj" />
+  </ItemGroup>
+
 </Project>
