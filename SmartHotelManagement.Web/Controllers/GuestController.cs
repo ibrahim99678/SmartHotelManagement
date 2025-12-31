@@ -107,9 +107,36 @@ namespace SmartHotelManagement.Web.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ViewDetails(int id)
+        {
+            var guestResult = await _guestService.GetByIdAsync(id);
+
+            if (!guestResult.Success || guestResult.Data == null)
+            {
+                TempData["ErrorMessage"] = guestResult.Error ?? "Guest not found.";
+                return RedirectToAction("Index");
+            }
+
+            return View(guestResult.Data);
+        }
+
+
         public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _guestService.DeleteAsync(id);
+            if (result.Success)
+            {
+                TempData["SuccessMessage"] = "Guest Deleted Successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.Error ?? "An Error occured while deleting the Guest!";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _guestService.DeleteAsync(id);
             if (result.Success)
