@@ -130,6 +130,40 @@ namespace SmartHotelManagement.BLL.Implementations
             return Result<int>.SuccessResult(existGuest.GuestId);
             
         }
-      
+
+        public async Task<Result<int>> UpdateAsync(UpdateGuestRequest guest)
+        {
+            if (guest is null)
+            {
+                return Result<int>.FailResult("Guest data cannot be null.");
+            }
+
+            // Assuming IDProofNumber is used to identify the guest to update
+            var existingGuests = await _guestUnitOfWork.GuestRepository.GetAsync(
+                x => x, x => x.IDProofNumber == guest.IDProofNumber, null, null, false);
+
+            var existGuest = existingGuests.FirstOrDefault();
+            if (existGuest is null)
+            {
+                return Result<int>.FailResult($"Guest with IDProofNumber {guest.IDProofNumber} is not found.");
+            }
+
+            existGuest.FirstName = guest.FirstName;
+            existGuest.LastName = guest.LastName;
+            existGuest.Address = guest.Address;
+            existGuest.GuestImage = guest.GuestImage;
+            existGuest.IDProofType = guest.IDProofType;
+            existGuest.IsActive = guest.IsActive;
+
+            await _guestUnitOfWork.GuestRepository.UpdateAsync(existGuest);
+            var saved = await _guestUnitOfWork.SaveChangesAsync();
+
+            if (!saved)
+            {
+                return Result<int>.FailResult("Fail to update guest.");
+            }
+
+            return Result<int>.SuccessResult(existGuest.GuestId);
+        }
     }
 }
