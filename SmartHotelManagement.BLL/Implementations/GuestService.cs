@@ -104,6 +104,7 @@ namespace SmartHotelManagement.BLL.Implementations
             existGuest.FirstName = guest.FirstName;
             existGuest.LastName = guest.LastName;
             existGuest.Address = guest.Address;
+            existGuest.PhoneNumber = guest.PhoneNumber;
             existGuest.GuestImage = guest.GuestImage;
             existGuest.IDProofType = guest.IDProofType;
 

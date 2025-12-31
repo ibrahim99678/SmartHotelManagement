@@ -7,6 +7,34 @@
     ViewData["BreadcrumbActive"] = "Guests List";
 }
 
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <!-- Bootstrap 4 close button -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete <strong id="guestName"></strong>?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="col">
 <div class="card">
@@ -39,9 +67,8 @@
                 {
                     <tr>
                         <td>
-                                    <img src="@(!string.IsNullOrEmpty(item.GuestImage) ? item.GuestImage : "/images/no-image.png")"
-                                         style="width:60px;height:60px;border-radius:8px;object-fit:cover;" />
-                     
+                            <img src="@(!string.IsNullOrEmpty(item.GuestImage) ? item.GuestImage : "/images/no-image.png")"
+                                 style="width:60px;height:60px;border-radius:8px;object-fit:cover;" />
                         </td>
                         <td>@item.FirstName @item.LastName</td>
                         <td>@item.PhoneNumber</td>
@@ -49,8 +76,17 @@
                         <td>@(item.IsActive ? "Active" : "Inactive")</td>
                         <td>
                             <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GuestId">Edit</a>
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.GuestId">Delete</a>
                             <a class="btn btn-sm btn-info" asp-action="ViewDetails" asp-route-id="@item.GuestId">View Details</a>
+
+                            <!-- Use Bootstrap 4 attributes (data-toggle/data-target) and keep data-* for JS -->
+                            <button class="btn btn-sm btn-danger"
+                                    data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-id="@item.GuestId"
+                                    data-name="@($"{item.FirstName} {item.LastName}")">
+                                Delete
+                            </button>
+
                         </td>
                     </tr>
                 }
@@ -72,9 +108,27 @@
     <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script>
-            $("#GuestDataTable").DataTable({
-          "responsive": true,
-          "autoWidth": false,
+        $("#GuestDataTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+        });
+    </script>
+
+    <!--JS for Delete Modal (use jQuery .on for Bootstrap 4 events)-->
+    <script>
+        $(function () {
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var guestId = button.data('id');
+                var guestName = button.data('name');
+
+                $('#guestName').text(guestName);
+
+                // Build action using Url.Action to ensure correct controller route
+                var baseUrl = '@Url.Action("Delete", "Guest")'; // e.g. "/Guest/Delete"
+                $('#deleteForm').attr('action', baseUrl + '/' + guestId);
+            });
         });
     </script>
 }
+
