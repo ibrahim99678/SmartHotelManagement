@@ -69,5 +69,45 @@ namespace SmartHotelManagement.BLL.Mapping
                 IsActive = request.IsActive
             };
         }
+        public static RoomType MapToRoomType(this CreateRoomTypeRequest request)
+        {
+            return new RoomType
+            {
+                RoomTypeName = request.RoomTypeName,
+                DefaultRate = request.DefaultRate,
+                CreatedAt = DateTime.Now,
+                CreatedBy = 1,
+
+            };
+            
+        }
+        public static RoomType MapToRoomType(this UpdateRoomTypeRequest request)
+        {
+            if (request == null) return null!;
+            return new RoomType
+            {
+                RoomTypeId = request.RoomTypeId,
+                RoomTypeName = request.RoomTypeName,
+                DefaultRate = request.DefaultRate,
+                ModifiedAt = DateTime.Now,
+                ModifiedBy = 1
+
+            };
+        }
+        public static Room MapToRoom(this CreateRoomRequest request)
+        {
+            return new Room
+            {
+                RoomNumber = request.RoomNumber,
+                RoomTypeId = request.RoomTypeId,
+                FloorNo = request.FloorNo,
+                Capacity = request.Capacity,
+                BaseRate = request.BaseRate,
+                Status = request.Status,
+                RoomImage = request.RoomImage,
+                Notes = request.Notes,
+                IsActive = request.IsActive
+            };
+        }
     }
 }

@@ -1,0 +1,66 @@
+﻿@using SmartHotelManagement.Model
+@model IEnumerable<Room>
+
+@{
+    ViewData["HeaderTitle"] = "Room";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Rooms List"; // Updated this line
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <a class="btn btn-primary mb-3" asp-action="Create">Add Room</a>
+                </h3>
+                <div class="card-body">
+                    <style>
+                        #RoomDataTable th,
+                        #RoomDataTable td {
+                            vertical-align: middle !important;
+                            text-align: center;
+                        }
+                    </style>
+                    <table class="table table-bordered table-striped">
+                        
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Room No</th>
+                                <th>Type</th>
+                                <th>Rate</th>                               
+                                <th>Status</th>
+                                <th>Active</th>
+                                <th style="width:240px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>                                   
+                                    <td>
+                                        <img src="@(!string.IsNullOrEmpty(item.RoomImage) ? item.RoomImage : "/images/no-image.png")"
+                                             style="width:70px;height:50px;border-radius:8px;object-fit:cover;" />
+                                    </td>                                   
+                                    <td>@item.RoomNumber</td>
+                                    <td>@item.RoomType?.RoomTypeName</td>
+                                    <td>@item.BaseRate</td>
+                                    <td>
+                                        <span class="badge bg-secondary">@item.Status</span>
+                                    </td>
+                                    <td>@(item.IsActive ? "Yes" : "No")</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.RoomId">Edit</a>
+                                        <a class="btn btn-sm btn-info" asp-action="ViewDetails" asp-route-id="@item.RoomId">View Details</a>
+                                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.RoomId">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

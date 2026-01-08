@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartHotelManagement.DAL.Context;
 
@@ -11,9 +12,11 @@ using SmartHotelManagement.DAL.Context;
 namespace SmartHotelManagement.DAL.Migrations
 {
     [DbContext(typeof(SmartHotelDbContext))]
-    partial class SmartHotelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260107051354_Room and RoomType add Entity")]
+    partial class RoomandRoomTypeaddEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

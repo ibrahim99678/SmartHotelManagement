@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SmartHotelManagement.Contract.Request;
+using SmartHotelManagement.Model;
 
 namespace SmartHotelManagement.BLL.ErrorModel
 {
@@ -28,6 +29,11 @@ namespace SmartHotelManagement.BLL.ErrorModel
         public static Result<T> FailResult(string error)
         {
             return new Result<T>(false, default, error);
+        }
+
+        internal static async Task<Result<IList<Room>>> SuccessResult(Task<IList<Room>> rooms)
+        {
+            throw new NotImplementedException();
         }
     }
 }

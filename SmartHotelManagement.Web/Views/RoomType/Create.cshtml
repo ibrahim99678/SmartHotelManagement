@@ -1,0 +1,48 @@
+﻿@model SmartHotelManagement.Contract.Request.CreateRoomTypeRequest
+
+@{
+    ViewData["HeaderTitle"] = "Create Room Type";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Room Types Add";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-info">
+            <div class="card-header">
+               <h3 class="card-title">Add Room type</h3>
+               </div>
+               <form class="form-horizontal" asp-action="Create" method="post">
+                   <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                   <div class="card-body">
+                       <div class="form-group-row">
+                            <label class="col-sm-2 col-form-label" asp-for="RoomTypeName">Room Type Name</label>
+                            <div class="col-sm-10">
+                                 <input type="text" asp-for="RoomTypeName" class="form-control" placeholder="Room Type Name" />
+                            </div>
+                            <span asp-validation-for="RoomTypeName" class="text-danger"></span>
+                       </div>
+                    <div class="form-group-row">
+                        <label class="col-sm-2 col-form-label" asp-for="DefaultRate">Default Rate</label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="DefaultRate" class="form-control" placeholder="Default Rate" />
+                        </div>
+                        <span asp-validation-for="DefaultRate" class="text-danger"></span>
+                    </div>
+                    </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info">Save</button>
+                    <a asp-action="Index" class="btn btn-danger float-right">Cancel</a>
+                </div>
+               </form>
+            </div>
+        </div>
+    </div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

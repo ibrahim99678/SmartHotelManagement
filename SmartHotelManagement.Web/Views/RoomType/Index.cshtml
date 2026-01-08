@@ -1,0 +1,35 @@
+﻿@using SmartHotelManagement.Model
+@model IEnumerable<RoomType>
+
+@{
+    ViewData["HeaderTitle"] = "RoomType";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Room Types List";
+}
+
+<h3>Room Types</h3>
+<a class="btn btn-primary mb-3" asp-action="create">Add Room Type</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Default Rate</th>
+            <th style="width:220px;">Action</th>        
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>@item.RoomTypeName</td>
+                <td>@item.DefaultRate</td>
+
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.RoomTypeId">Edit</a>
+                    <a class="btn btn-sm btn-info" asp-action="ViewDetails" asp-route-id="@item.RoomTypeId">View Details</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.RoomTypeId">Delete</a>
+                </td>              
+            </tr>
+        }
+    </tbody>
+</table>
