@@ -1,6 +1,4 @@
 ﻿@model SmartHotelManagement.Contract.Request.CreateRoomRequest
-@* @model SmartHotelManagement.Model.Room
- *@
 
 @{
     ViewData["HeaderTitle"] = "Create Room";
@@ -28,19 +26,13 @@
                         </div>
 
                         <label class="col-sm-2 col-form-label">Room Type</label>
-                          <div class="col-sm-4">
-                            <select asp-for="RoomTypeId" class="form-control">
+                        <div class="col-sm-4">
+                            <select asp-for="RoomTypeId" class="form-control" asp-items="ViewBag.RoomTypeId">
                                 <option value="">Select Room Type</option>
-                                @* containing the list of room types *@
-                                @foreach (var type in ViewBag.RoomTypeName)
-                                {
-                                    <option value="@type.RoomTypeId">@type.RoomTypeName</option>
-                                }
-                            
-                                </select>
-                            </div>
+                            </select>
+                        </div>
+                        </div>
                         
-                    </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="FloorNo">Floor Number</label>
@@ -84,8 +76,9 @@
                             <select asp-for="Status" class="form-control">
                                 <option value="">Select Room Status</option>
                                 <option value="Available">Available</option>
+                                <option value="Reserved">Reserved</option>
                                 <option value="Occupied">Occupied</option>
-                                <option value="UnderMaintenance">Under Maintenance</option>
+                                <option value="Maintenance">Maintenance</option>
                             </select>
                         </div>
                     

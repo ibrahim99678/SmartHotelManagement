@@ -26,9 +26,9 @@
                         
                         <thead>
                             <tr>
-                                <th>Photo</th>
+                                <th>Room Image</th>
                                 <th>Room No</th>
-                                <th>Type</th>
+                                <th>Room Type</th>
                                 <th>Rate</th>                               
                                 <th>Status</th>
                                 <th>Active</th>
@@ -44,7 +44,7 @@
                                              style="width:70px;height:50px;border-radius:8px;object-fit:cover;" />
                                     </td>                                   
                                     <td>@item.RoomNumber</td>
-                                    <td>@item.RoomType?.RoomTypeName</td>
+                                    <td>@item.RoomTypeId</td>
                                     <td>@item.BaseRate</td>
                                     <td>
                                         <span class="badge bg-secondary">@item.Status</span>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,3 +26,7 @@ public class Room : Entity
     public string? Notes { get; set; }
     public bool IsActive { get; set; }=true;
 }
+
+
+
+

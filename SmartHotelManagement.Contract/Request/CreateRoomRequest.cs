@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHotelManagement.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,7 +14,8 @@ namespace SmartHotelManagement.Contract.Request
         public int RoomId { get; set; }
         [Required, StringLength(10)]
         public string RoomNumber { get; set; } = string.Empty;
-        public int RoomTypeId { get; set; }       
+        public int RoomTypeId { get; set; }      
+        public RoomType? RoomType { get; set; } 
         public int? FloorNo { get; set; }
         public int? Capacity { get; set; }
         [Column(TypeName = "decimal(18,2)")]

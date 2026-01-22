@@ -16,6 +16,7 @@ namespace SmartHotelManagement.DAL.Context
         public DbSet<Guest> Guests { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
 
         //DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder<SmartHotelDbContext>();

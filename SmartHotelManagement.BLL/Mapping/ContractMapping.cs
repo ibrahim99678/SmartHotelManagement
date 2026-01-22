@@ -1,6 +1,5 @@
 ﻿using SmartHotelManagement.Contract.Request;
 using SmartHotelManagement.Model;
-using System;
 
 namespace SmartHotelManagement.BLL.Mapping
 {
@@ -109,5 +108,20 @@ namespace SmartHotelManagement.BLL.Mapping
                 IsActive = request.IsActive
             };
         }
+        public static Reservation MapToReservation(this CreateReservationRequest request)
+        {
+            return new Reservation
+            {
+                GuestId = request.GuestId,
+                RoomId = request.RoomId,
+                CheckInDate = request.CheckInDate,
+                CheckOutDate = (DateTime)request.CheckOutDate,                
+                TotalAmount = request.TotalAmount,
+                Status = request.Status,
+                CreatedAt = DateTime.Now,
+                CreatedBy = 1
+            };
+        }
+       
     }
 }

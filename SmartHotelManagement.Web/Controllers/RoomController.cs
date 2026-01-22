@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SmartHotelManagement.BLL.Interfaces;
 using SmartHotelManagement.Contract.Request;
 using SmartHotelManagement.DAL.Interfaces;
@@ -10,11 +11,13 @@ namespace SmartHotelManagement.Web.Controllers;
 public class RoomController : Controller
 {
     private readonly IRoomService _roomService;
+    private readonly IRoomTypeService _roomTypeService;
     private readonly IWebHostEnvironment _hostEnvironment;
 
-    public RoomController(IRoomService roomService, IWebHostEnvironment hostEnvironment)
+    public RoomController(IRoomService roomService, IRoomTypeService roomTypeService, IWebHostEnvironment hostEnvironment)
     {
         _roomService = roomService;
+        _roomTypeService = roomTypeService;
         _hostEnvironment = hostEnvironment;
     }
 
@@ -24,17 +27,26 @@ public class RoomController : Controller
         return View(roomsResult.Data);
     }
 
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
+        ViewData["RoomTypeId"] = new SelectList(_roomTypeService.GetAllAsync().Result.Data, "RoomTypeId", "RoomTypeName");
+        var typesResult = await _roomTypeService.GetAllAsync();
+        ViewBag.RoomTypeName = typesResult.Success ? typesResult.Data : new List<RoomType>();
         return View();
     }
+
     [HttpPost]
-    [ValidateAntiForgeryToken] 
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateRoomRequest room, IFormFile? imageFile)
     {
-        if(!ModelState.IsValid) return View(room);
+        if (!ModelState.IsValid)
+        {
+            var typesResult = await _roomTypeService.GetAllAsync();
+            ViewBag.RoomTypeName = typesResult.Success ? typesResult.Data : new List<RoomType>();
+            return View(room);
+        }
 
-        if(imageFile!=null && imageFile.Length>0)
+        if (imageFile != null && imageFile.Length > 0)
         {
             var uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "rooms");
             Directory.CreateDirectory(uploadsFolder);
@@ -53,6 +65,8 @@ public class RoomController : Controller
         }
         else
         {
+            var typesResult = await _roomTypeService.GetAllAsync();
+            ViewBag.RoomTypeName = typesResult.Success ? typesResult.Data : new List<RoomType>();
             TempData["ErrorMessage"] = result.Error;
             return View(room);
         }
