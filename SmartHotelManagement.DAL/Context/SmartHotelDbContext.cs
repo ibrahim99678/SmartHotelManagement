@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SmartHotelManagement.Model;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartHotelManagement.DAL.Context
 {
-    public class SmartHotelDbContext : DbContext
+    public class SmartHotelDbContext :IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
         public SmartHotelDbContext(DbContextOptions<SmartHotelDbContext> options) : base(options)
         {
