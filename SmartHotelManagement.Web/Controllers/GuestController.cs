@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartHotelManagement.BLL.Interfaces;
 using SmartHotelManagement.BLL.Mapping;
 using SmartHotelManagement.Contract.Request;
@@ -7,6 +8,7 @@ using System.IO;
 
 namespace SmartHotelManagement.Web.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class GuestController : Controller
     {
         private readonly IGuestService _guestService;

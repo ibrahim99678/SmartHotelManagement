@@ -34,7 +34,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<SmartHotelDbContext>()
     .AddDefaultTokenProviders();
 
-//log out settings
+//log out settings , Configure cookie setting
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";

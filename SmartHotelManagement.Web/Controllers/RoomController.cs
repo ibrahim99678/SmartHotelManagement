@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SmartHotelManagement.BLL.Interfaces;
@@ -8,8 +9,10 @@ using SmartHotelManagement.Model;
 
 namespace SmartHotelManagement.Web.Controllers;
 
+[Authorize(Roles = "Admin,Manager")]
 public class RoomController : Controller
 {
+
     private readonly IRoomService _roomService;
     private readonly IRoomTypeService _roomTypeService;
     private readonly IWebHostEnvironment _hostEnvironment;
