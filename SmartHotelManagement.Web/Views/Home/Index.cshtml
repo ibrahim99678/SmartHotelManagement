@@ -1,60 +1,72 @@
-﻿@{
+﻿@using SmartHotelManagement.Model
+@model IEnumerable<SmartHotelManagement.Web.Models.RoomViewModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1>Welcome to Hotel Management System</h1>
-    <p class="lead">ASP.NET Core Web project where following n-tier architecture and repository pattern</p>
-    <p>Assignment on module 26</p>
-    <a class="btn btn-primary btn-lg" asp-area="" asp-controller="Guest" asp-action="Index">View Guest Index</a>
+<div class="p-5 mb-4 bg-dark text-white rounded-3 shadow" style="background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1350&q=80'); background-size: cover;">
+    <div class="container-fluid py-5 text-center">
+        <h1 class="display-5 fw-bold">Unlimited Rooms & More</h1>
+        <p class="fs-4">Browse our latest Hotel Room</p>
+        <a asp-controller="Room" asp-action="Index" class="btn btn-primary btn-lg">Browser All Rooms</a>
+    </div>
 </div>
+<div>
+    <div class="container">
+        <div class="row">
+            @{
+                var rooms = Model ?? Enumerable.Empty<SmartHotelManagement.Web.Models.RoomViewModel>();
+            }
 
-@* <div>
-    <h6><strong>Website : </strong><a href="https://www.ostad.com" style="color:darkred">www.ostad.com</a></h6>
-</div>
+            @foreach (var room in rooms)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm room-card">
+                        <img src="@room.ImageUrl" class="card-img-top" alt="@room" style="height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold">@room.Title</h5>
+                        </div>
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-warning text-dark shadow-sm">
+                                <i class="bi bi-star-fill"></i> @room.Rating.ToString("0.0")
+                            </span>
 
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-
-                    </h3>
-                    <div class="card-body">
-                        <style>
-                            #DataTable th,
-                            #DataTable td {
-                                vertical-align: middle !important;
-                                text-align: center;
-                        }
-                        </style>    
-                    <table id="DataTable" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Submitted By</th>
-                                <th>Project Description</th>
-                                <th>Course Name</th>
-                                <th>Submitted To</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Mohammad Ibrahim khalil</td>
-                                <td>Smart Hotel Management System</td>
-                                <td>Course Name: Full Stack Web Development With ASP.NET Core</td>
-                                <td>Ostad</td>
-                        </tr>
-                            <tr> <!-- Added a new row for additional information -->
-                                <td>Contact Number</td>
-                                <td>+8801911848073</td>
-                                <td>Batch :07</td>
-                            <td><strong>Instructor Name:</strong> Mr.Nasir Uddin</td>
-                            </tr>                        
+                            @if(room.IsNew)
+                            {
+                                <span class="badge bg-info text-dark shadow-sm ms-1">
+                                    <i class="bi bi-star-fill"></i> New
+                                </span>
+                            }
+                            
+                        </div>
                         
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                        <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                            <a asp-controller="Room" asp-action="Details" asp-route-id="@room.Id"
+                               class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>            
+            }
+            
         </div>
     </div>
-</div> *@
+</div>
+
+@* Custom CSS for Hover Effect *@
+<style>
+    .room-card {
+        transition: transform 0.3s ease, shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+    }       
+
+    .card-img-top {
+        border-bottom: 3px solid #0d6efd;
+    }
+</style>

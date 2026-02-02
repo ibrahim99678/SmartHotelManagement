@@ -25,6 +25,7 @@ public class Room : Entity
     [StringLength(500)]
     public string? Notes { get; set; }
     public bool IsActive { get; set; }=true;
+   
 }
 
 

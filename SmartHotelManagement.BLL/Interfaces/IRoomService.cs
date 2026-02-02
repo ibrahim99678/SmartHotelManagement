@@ -1,6 +1,7 @@
 ﻿using SmartHotelManagement.BLL.ErrorModel;
 using SmartHotelManagement.Contract.Request;
 using SmartHotelManagement.Model;
+using SmartHotelManagement.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
