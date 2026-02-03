@@ -1,0 +1,92 @@
+﻿@model SmartHotelManagement.Model.Room
+
+@{
+    ViewData["HeaderTitle"] = "Edit Room";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Rooms Edit";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Update Room</h3>
+            </div>
+            <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RoomId" />
+                    <input type="hidden" asp-for="RoomImage" />
+
+            <div class="form-group row">
+                <label asp-for="RoomNumber" class="col-sm-2 control-label"></label>
+                <input asp-for="RoomNumber" class="form-control col-sm-10" />
+                <span asp-validation-for="RoomNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="RoomTypeId" class="col-sm-2 control-label"></label>
+                <select asp-for="RoomTypeId" class="form-control col-sm-10" asp-items="ViewBag.RoomTypeId"></select>
+                <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="FloorNo" class="col-sm-2 control-label"></label>
+                <input asp-for="FloorNo" class="form-control col-sm-10" />
+                <span asp-validation-for="FloorNo" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Capacity" class="col-sm-2 control-label"></label>
+                <input asp-for="Capacity" class="form-control col-sm-10" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BaseRate" class="col-sm-2 control-label"></label>
+                <input asp-for="BaseRate" class="form-control col-sm-10" />
+                <span asp-validation-for="BaseRate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Status" class="col-sm-2 control-label"></label>
+                        <select asp-for="Status" class="form-control col-sm-10">
+                            <option value="">Select Room Status</option>
+                            <option value="Available">Available</option>
+                            <option value="Reserved">Reserved</option>
+                            <option value="Occupied">Occupied</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+            </div>
+            
+            <div class="form-group row">
+                <label asp-for="Notes" class="col-sm-2 control-label"></label>
+                <textarea asp-for="Notes" class="form-control col-sm-10"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check offset-2">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="RoomImage">Room Photo</label>
+                        <div class="col-sm-10">
+                            @* Show current image preview *@
+                            @if (!string.IsNullOrEmpty(Model.RoomImage))
+                            {
+                                <div class="mb-2">
+                                    <img src="@(Url.Content("~" + Model.RoomImage))" style="width:80px;height:80px;border-radius:8px;object-fit:cover;" alt="Current photo" />
+                                </div>
+                            }
+                            <input type="file" asp-for="RoomImage" name="imageFile" class="form-control" accept="image/*" />
+                        </div>
+                    </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-info">Update</button>
+                <a asp-action="Index" class="btn btn-default float-right">Back to List</a>
+                    </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -108,6 +108,23 @@ namespace SmartHotelManagement.BLL.Mapping
                 IsActive = request.IsActive
             };
         }
+        public static Room MapToRoom(this UpdateRoomRequest request)
+        {
+            if (request == null) return null!;
+            return new Room
+            {
+                RoomId = request.RoomId,
+                RoomNumber = request.RoomNumber,
+                RoomTypeId = request.RoomTypeId,
+                FloorNo = request.FloorNo,
+                Capacity = request.Capacity,
+                BaseRate = request.BaseRate,
+                Status = request.Status,
+                RoomImage = request.RoomImage,
+                Notes = request.Notes,
+                IsActive = request.IsActive
+            };
+        }
         public static Reservation MapToReservation(this CreateReservationRequest request)
         {
             return new Reservation
