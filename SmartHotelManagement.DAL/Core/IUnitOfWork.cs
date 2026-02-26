@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHotelManagement.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace SmartHotelManagement.DAL.Core
         bool SaveChanges();
         void Rollback();
         Task<bool> SaveChangesAsync();
+        
     }
 }

@@ -13,4 +13,6 @@ public class RoomType : Entity
     [Required,StringLength(100)]
     public string RoomTypeName { get; set; }= string.Empty;
     public decimal DefaultRate { get; set; }=0;
+
+    public ICollection<Room>? Rooms { get; set; } = new List<Room>();
 }

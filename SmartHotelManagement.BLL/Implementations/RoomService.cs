@@ -1,4 +1,4 @@
-﻿using SmartHotelManagement.BLL.ErrorModel;
+using SmartHotelManagement.BLL.ErrorModel;
 using SmartHotelManagement.BLL.Interfaces;
 using SmartHotelManagement.BLL.Mapping;
 using SmartHotelManagement.Contract.Request;
@@ -62,9 +62,10 @@ public class RoomService : IRoomService
     public async Task<Result<IList<Room>>> GetAllAsync()
     {
         var rooms = await _roomUnitOfWork.RoomRepository.GetAsync(
-            x => x, // selector: return the Room entity itself
-            null,   // predicate: no filter
-            q => q.OrderByDescending(x => x.RoomId) // order by RoomId descending
+            x => x,
+            null,
+            q => q.OrderByDescending(x => x.RoomId),
+            include: q => q.Include(r => r.RoomType)
         );
         return Result<IList<Room>>.SuccessResult(rooms);
     }

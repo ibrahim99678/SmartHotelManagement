@@ -13,14 +13,14 @@ public class Reservation : Entity
     public Guest? Guest { get; set; }
     public int RoomId { get; set; } 
     public Room? Room { get; set; }
-    public string ReferenceName { get; set; } = string.Empty;
-    public int? ReferencePhone { get; set; }
-    public string SpouseName { get; set; }= string.Empty;
+    public string? ReferenceName { get; set; } = string.Empty;
+    public int? ReferencePhone { get; set; }=0; 
+    public string? SpouseName { get; set; }= string.Empty;
     public DateTime CheckInDate { get; set; }
-    public DateTime CheckOutDate { get; set; }
+    public DateTime? CheckOutDate { get; set; }
     public int? StayInNight { get; set; } = 0;
-    public decimal TotalAmount { get; set; } = 0;
-    public string Status { get; set; } = "Booked"; // Booked, CheckedIn, CheckedOut, Cancelled
+    public decimal? TotalAmount { get; set; } = 0;
+    public string? Status { get; set; } = "Booked"; // Booked, CheckedIn, CheckedOut, Cancelled
     public bool IsCheckedIn { get; set; }
     public bool IsCheckedOut { get; set; }
 }

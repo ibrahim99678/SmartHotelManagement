@@ -51,6 +51,11 @@ public class RoomTypeService : IRoomTypeService
         if (roomType is not null)
         {
             await _roomTypeUnitOfWork.RoomTypeRepository.DeleteAsync(roomType);
+            var saved = await _roomTypeUnitOfWork.SaveChangesAsync();
+            if (!saved)
+            {
+                return Result<bool>.FailResult("Failed to delete Room Type.");
+            }
             return Result<bool>.SuccessResult(true);
         }
         
@@ -81,12 +86,17 @@ public class RoomTypeService : IRoomTypeService
     public async Task<Result<int>> UpdateAsync(RoomType roomType)
     {
         var existingRoomType = await _roomTypeUnitOfWork.RoomTypeRepository.GetByIdAsync(roomType.RoomTypeId);
-        if (existingRoomType is null)
+        if (existingRoomType is not null)
         {
             existingRoomType.RoomTypeName = roomType.RoomTypeName;
             existingRoomType.DefaultRate = roomType.DefaultRate;
             await _roomTypeUnitOfWork.RoomTypeRepository.UpdateAsync(existingRoomType);
-            await _roomTypeUnitOfWork.SaveChangesAsync();      
+            var saved = await _roomTypeUnitOfWork.SaveChangesAsync();
+            if (!saved)
+            {
+                return Result<int>.FailResult("Failed to update Room Type.");
+            }
+            return Result<int>.SuccessResult(existingRoomType.RoomTypeId);
         }
         return Result<int>.FailResult("Room Type not found.");
     }

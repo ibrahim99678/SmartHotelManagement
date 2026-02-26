@@ -1,91 +1,114 @@
-﻿@model IEnumerable<SmartHotelManagement.Model.Reservation>
-
+@model IEnumerable<SmartHotelManagement.Model.Reservation>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["HeaderTitle"] = "Reservations";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Reservations List";
 }
 
-<h1>Index</h1>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete reservation for <strong id="guestName"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+ </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Guest)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Room)
-            </th>           
-            <th>
-                @Html.DisplayNameFor(model => model.SpouseName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CheckInDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CheckOutDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StayInNight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsCheckedIn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsCheckedOut)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Guest.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room.RoomNumber)
-            </td>           
-            <td>
-                @Html.DisplayFor(modelItem => item.SpouseName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckInDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckOutDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StayInNight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsCheckedIn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsCheckedOut)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ReservationId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ReservationId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ReservationId">Delete</a>
-            </td>
-        </tr>
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <a class="btn btn-primary mb-3" asp-action="Create">Add Reservation</a>
+                </h3>
+            </div>
+            <div class="card-body">
+                <style>
+                    #ReservationDataTable th,
+                    #ReservationDataTable td {
+                        vertical-align: middle !important;
+                        text-align: center;
+                    }
+                </style>
+                <table id="ReservationDataTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Guest</th>
+                            <th>Room</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Nights</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th style="width:240px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@(item.Guest != null ? (item.Guest.FirstName + " " + item.Guest.LastName) : "-")</td>
+                                <td>@(item.Room != null ? item.Room.RoomNumber : "-")</td>
+                                <td>@item.CheckInDate.ToShortDateString()</td>
+                                <td>@(item.CheckOutDate.HasValue ? item.CheckOutDate.Value.ToShortDateString() : "-")</td>
+                                <td>@item.StayInNight</td>
+                                <td>@string.Format("{0:C}", item.TotalAmount)</td>
+                                <td><span class="badge bg-secondary">@item.Status</span></td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.ReservationId" class="btn btn-sm btn-warning">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.ReservationId" class="btn btn-sm btn-info">Details</a>
+                                    <button class="btn btn-sm btn-danger"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@item.ReservationId"
+                                            data-name="@($"{item.Guest?.FirstName}")">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script>
+        $("#ReservationDataTable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+        });
+        $(function () {
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var name = button.data('name');
+                $('#guestName').text(name);
+                var baseUrl = '@Url.Action("Delete", "Reservations")';
+                $('#deleteForm').attr('action', baseUrl + '/' + id);
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

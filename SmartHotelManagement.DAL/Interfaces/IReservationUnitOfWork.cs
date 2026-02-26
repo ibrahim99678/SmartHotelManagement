@@ -1,4 +1,4 @@
-﻿using SmartHotelManagement.DAL.Core;
+using SmartHotelManagement.DAL.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace SmartHotelManagement.DAL.Interfaces
 {
     public interface IReservationUnitOfWork : IUnitOfWork
     {
-       
+        IReservationRepository ReservationRepository { get; }
     }
 }

@@ -131,7 +131,7 @@
                             <a href="#" class="nav-link">
                                 <i class="nav-icon far fa-envelope"></i>
                                 <p>
-                                    Room
+                                    RoomType
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
@@ -139,15 +139,27 @@
                                 <li class="nav-item">
                                     <a asp-action="Index" asp-controller="RoomType" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>List Room Type</p>
+                                        <p>List RoomType</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-action="Create" asp-controller="RoomType" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Add Room Type</p>
+                                        <p>Add RoomType</p>
                                     </a>
                                 </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon far fa-envelope"></i>
+                                <p>
+                                    Room
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a asp-action="Index" asp-controller="Room" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
@@ -160,7 +172,31 @@
                                         <p>Add Room</p>
                                     </a>
                                 </li>
-                                
+
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon far fa-envelope"></i>
+                                <p>
+                                    Reservation
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="Reservations" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Reservation List</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="Create" asp-controller="Reservations" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Reservation</p>
+                                    </a>
+                                </li>
+
                             </ul>
                         </li>
                         <li class="nav-item">

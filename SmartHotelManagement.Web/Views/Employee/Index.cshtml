@@ -1,0 +1,73 @@
+@model IEnumerable<SmartHotelManagement.Model.Employee>
+@{
+    ViewData["HeaderTitle"] = "Employees";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Employees List";
+}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">Employees</h3>
+                <a class="btn btn-primary" asp-action="Create">Add Employee</a>
+            </div>
+            <div class="card-body">
+                <form method="get" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="q" value="@(ViewBag.Query ?? "")" class="form-control" placeholder="Search employees" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Active</th>
+                            <th style="width:220px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model)
+                        {
+                            <tr>
+                                <td>@e.FirstName @e.LastName</td>
+                                <td>@e.Email</td>
+                                <td>@e.PhoneNumber</td>
+                                <td>@e.Department</td>
+                                <td>@e.Position</td>
+                                <td>@(e.IsActive ? "Yes" : "No")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@e.EmployeeId">Edit</a>
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@e.EmployeeId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @{
+                    int page = ViewBag.Page ?? 1;
+                    int pageSize = ViewBag.PageSize ?? 10;
+                    int total = ViewBag.Total ?? 0;
+                    int totalPages = (int)Math.Ceiling(total / (double)pageSize);
+                }
+                <nav aria-label="Employee pagination">
+                    <ul class="pagination">
+                        <li class="page-item @(page <= 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-q="@(ViewBag.Query)" asp-route-page="@(page-1)" asp-route-pageSize="@(pageSize)">Previous</a>
+                        </li>
+                        <li class="page-item disabled"><span class="page-link">@(page) / @(totalPages)</span></li>
+                        <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-q="@(ViewBag.Query)" asp-route-page="@(page+1)" asp-route-pageSize="@(pageSize)">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

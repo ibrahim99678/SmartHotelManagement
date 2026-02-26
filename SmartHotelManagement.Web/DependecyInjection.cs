@@ -1,4 +1,4 @@
-﻿using SmartHotelManagement.BLL.Implementations;
+using SmartHotelManagement.BLL.Implementations;
 using SmartHotelManagement.BLL.Interfaces;
 using SmartHotelManagement.DAL.Implementation;
 using SmartHotelManagement.DAL.Implemention;
@@ -17,6 +17,18 @@ namespace SmartHotelManagement.Web
             services.AddScoped<IRoomTypeUnitOfWork, RoomTypeUnitOfWork>();
             services.AddScoped<IRoomUnitOfWork, RoomUnitOfWork>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<IReservationUnitOfWork, ReservationUnitOfWork>();
+            services.AddScoped<IRoomChangeRepository, RoomChangeRepository>();
+            services.AddScoped<IRoomChangeUnitOfWork, RoomChangeUnitOfWork>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IPaymentUnitOfWork, PaymentUnitOfWork>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeUnitOfWork, EmployeeUnitOfWork>();
+            services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+            services.AddScoped<IAuditLogUnitOfWork, AuditLogUnitOfWork>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IRoomUnitOfWork, RoomUnitOfWork>();
 
             return services;
         }
@@ -26,6 +38,11 @@ namespace SmartHotelManagement.Web
             services.AddScoped<IGuestService, GuestService>();           
             services.AddScoped<IRoomTypeService, RoomTypeService>();
             services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IRoomChangeService, RoomChangeService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IAuditLogService, AuditLogService>();
 
             return services;
         }

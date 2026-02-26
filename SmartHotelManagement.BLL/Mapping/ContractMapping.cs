@@ -1,4 +1,4 @@
-﻿using SmartHotelManagement.Contract.Request;
+using SmartHotelManagement.Contract.Request;
 using SmartHotelManagement.Model;
 
 namespace SmartHotelManagement.BLL.Mapping
@@ -102,7 +102,7 @@ namespace SmartHotelManagement.BLL.Mapping
                 FloorNo = request.FloorNo,
                 Capacity = request.Capacity,
                 BaseRate = request.BaseRate,
-                Status = request.Status,
+                Status=RoomStatus.Available,
                 RoomImage = request.RoomImage,
                 Notes = request.Notes,
                 IsActive = request.IsActive
@@ -119,7 +119,7 @@ namespace SmartHotelManagement.BLL.Mapping
                 FloorNo = request.FloorNo,
                 Capacity = request.Capacity,
                 BaseRate = request.BaseRate,
-                Status = request.Status,
+                Status = Enum.Parse<RoomStatus>(request.Status),
                 RoomImage = request.RoomImage,
                 Notes = request.Notes,
                 IsActive = request.IsActive
@@ -131,10 +131,16 @@ namespace SmartHotelManagement.BLL.Mapping
             {
                 GuestId = request.GuestId,
                 RoomId = request.RoomId,
+                ReferenceName = request.ReferenceName,
+                ReferencePhone = int.TryParse(request.ReferencePhone, out var phone) ? phone : null,
+                SpouseName = request.SpouseName,
                 CheckInDate = request.CheckInDate,
                 CheckOutDate = (DateTime)request.CheckOutDate,                
+                StayInNight = request.StayInNight,
                 TotalAmount = request.TotalAmount,
                 Status = request.Status,
+                IsCheckedIn = request.IsCheckedIn,
+                IsCheckedOut = request.IsCheckedOut,
                 CreatedAt = DateTime.Now,
                 CreatedBy = 1
             };

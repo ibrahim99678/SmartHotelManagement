@@ -20,14 +20,11 @@ public class Room : Entity
     public int? Capacity { get; set; }
     [Column(TypeName = "decimal(18,2)")]
     public decimal BaseRate { get; set; } = 0;
-    public string Status { get; set; }= "Available";// Available, Occupied, Maintenance
+    public RoomStatus? Status { get; set; }= RoomStatus.Available;// Available, Occupied, Maintenance
     public string? RoomImage { get; set; }
     [StringLength(500)]
     public string? Notes { get; set; }
     public bool IsActive { get; set; }=true;
    
+    public ICollection<Reservation>? Reservations { get; set; } = new List<Reservation>();
 }
-
-
-
-

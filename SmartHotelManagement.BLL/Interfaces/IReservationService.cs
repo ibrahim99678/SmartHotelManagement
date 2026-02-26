@@ -1,6 +1,6 @@
-﻿using SmartHotelManagement.BLL.ErrorModel;
+using SmartHotelManagement.BLL.ErrorModel;
 using SmartHotelManagement.Contract.Request;
-using SmartHotelManagement.DAL.Migrations;
+using SmartHotelManagement.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

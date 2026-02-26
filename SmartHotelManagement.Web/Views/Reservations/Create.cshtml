@@ -1,95 +1,147 @@
-﻿@model SmartHotelManagement.Model.Reservation
-
+@model SmartHotelManagement.Model.Reservation
 @{
-    ViewData["Title"] = "Create";
+    ViewData["HeaderTitle"] = "Create Reservation";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Reservations Add";
 }
-
-<h1>Create</h1>
-
-<h4>Reservation</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="GuestId" class="control-label"></label>
-                <select asp-for="GuestId" class ="form-control" asp-items="ViewBag.GuestId"></select>
+    <div class="col-md-12">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Add New Reservation</h3>
             </div>
-            <div class="form-group">
-                <label asp-for="RoomId" class="control-label"></label>
-                <select asp-for="RoomId" class ="form-control" asp-items="ViewBag.RoomId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReferenceName" class="control-label"></label>
-                <input asp-for="ReferenceName" class="form-control" />
-                <span asp-validation-for="ReferenceName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReferencePhone" class="control-label"></label>
-                <input asp-for="ReferencePhone" class="form-control" />
-                <span asp-validation-for="ReferencePhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SpouseName" class="control-label"></label>
-                <input asp-for="SpouseName" class="form-control" />
-                <span asp-validation-for="SpouseName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CheckInDate" class="control-label"></label>
-                <input asp-for="CheckInDate" class="form-control" />
-                <span asp-validation-for="CheckInDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CheckOutDate" class="control-label"></label>
-                <input asp-for="CheckOutDate" class="form-control" />
-                <span asp-validation-for="CheckOutDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StayInNight" class="control-label"></label>
-                <input asp-for="StayInNight" class="form-control" />
-                <span asp-validation-for="StayInNight" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control">
-                    <option value="">Select Status</option>
-                    <option>Pending</option>
-                    <option>Booked</option>
-                    <option>Confirmed</option>
-                    <option>CheckedIn</option>
-                    <option>CheckedOut</option>
-                    <option>Cancelled</option>
-                </select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCheckedIn" /> @Html.DisplayNameFor(model => model.IsCheckedIn)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCheckedOut" /> @Html.DisplayNameFor(model => model.IsCheckedOut)
-                </label>
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-info" />
-                <a asp-action="Index" class="btn btn-default float-right">Back to List</a>
-            </div>
-        </form>
+            <form class="form-horizontal" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                }
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="GuestId">Guest</label>
+                        <div class="col-sm-10">
+                            <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId"></select>
+                        </div>
+                        <span asp-validation-for="GuestId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="RoomId">Room</label>
+                        <div class="col-sm-10">
+                            <select asp-for="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
+                        </div>
+                        <span asp-validation-for="RoomId" class="text-danger"></span>
+                    </div>                  
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="ReferenceName">Reference Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="ReferenceName" class="form-control" placeholder="Reference Name" />
+                        </div>
+                        <span asp-validation-for="ReferenceName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="ReferencePhone">Reference Phone</label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="ReferencePhone" class="form-control" placeholder="Reference Phone" />
+                        </div>
+                        <span asp-validation-for="ReferencePhone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="SpouseName">Spouse Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="SpouseName" class="form-control" placeholder="Spouse Name" />
+                        </div>
+                        <span asp-validation-for="SpouseName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="CheckInDate">Check-In Date</label>
+                        <div class="col-sm-10">
+                            <input type="datetime-local" asp-for="CheckInDate" class="form-control" id="CheckInDate" />
+                        </div>
+                        <span asp-validation-for="CheckInDate" class="text-danger"></span> 
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="CheckOutDate">Check-Out Date</label>
+                        <div class="col-sm-10">
+                            <input type="datetime-local" asp-for="CheckOutDate" class="form-control" id="CheckOutDate" />
+                        </div>
+                        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="StayInNight">Stay In Night</label>
+                        <div class="col-sm-10">
+                            <input type="number" asp-for="StayInNight" class="form-control" placeholder="Stay In Night" id="StayInNight" />
+                        </div>
+                        <span asp-validation-for="StayInNight" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="TotalAmount">Total Amount</label>
+                        <div class="col-sm-10">
+                            <input type="number" asp-for="TotalAmount" class="form-control" placeholder="Total Amount" />
+                        </div>
+                        <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Status">Status</label>
+                        <div class="col-sm-10">
+                            <select asp-for="Status" class="form-control">
+                                <option value="">Select Status</option>
+                                <option>Pending</option>
+                                <option>Booked</option>
+                                <option>Confirmed</option>
+                                <option>CheckedIn</option>
+                                <option>CheckedOut</option>
+                                <option>Cancelled</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group accent-blue row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10 form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="IsCheckedIn" />
+                            <label class="form-check-label" asp-for="IsCheckedIn"></label>
+                        </div>
+                    </div>
+                    <div class="form-group accent-blue row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10 form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="IsCheckedOut" />
+                            <label class="form-check-label" asp-for="IsCheckedOut"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info" id="btnSave" disabled>Save</button>
+                    <a asp-action="Index" class="btn btn-default float-right">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        (function () {
+            var inEl = document.getElementById('CheckInDate');
+            var outEl = document.getElementById('CheckOutDate');
+            var nightEl = document.getElementById('StayInNight');
+            var saveBtn = document.getElementById('btnSave');
+            function calc() {
+                if (!inEl.value || !outEl.value) return;
+                var inDate = new Date(inEl.value);
+                var outDate = new Date(outEl.value);
+                var diff = Math.round((outDate - inDate) / (1000 * 60 * 60 * 24));
+                nightEl.value = diff > 0 ? diff : 0;
+            }
+            function validate() {
+                if (!inEl.value || !outEl.value) { saveBtn.disabled = true; return; }
+                var inDate = new Date(inEl.value);
+                var outDate = new Date(outEl.value);
+                saveBtn.disabled = !(outDate > inDate);
+            }
+            inEl.addEventListener('change', function(){ calc(); validate(); });
+            outEl.addEventListener('change', function(){ calc(); validate(); });
+            validate();
+        })();
+    </script>
 }
-

@@ -1,4 +1,4 @@
-﻿@model SmartHotelManagement.Contract.Request.CreateRoomRequest
+@model SmartHotelManagement.Contract.Request.CreateRoomRequest
 
 @{
     ViewData["HeaderTitle"] = "Create Room";
@@ -109,4 +109,31 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        (function () {
+            var types = [];
+            @if (ViewBag.RoomTypeName != null)
+            {
+                foreach (var t in (IEnumerable<SmartHotelManagement.Model.RoomType>)ViewBag.RoomTypeName)
+                {
+                    @:types.push({ id: @t.RoomTypeId, rate: @t.DefaultRate });
+                }
+            }
+            function findRate(id) {
+                var found = types.find(function (x) { return x.id == id; });
+                return found ? found.rate : 0;
+            }
+            var select = document.getElementById('RoomTypeId');
+            var rateInput = document.getElementById('BaseRate');
+            function onTypeChange() {
+                var id = parseInt(select.value || '0');
+                var rate = findRate(id);
+                if (rateInput) rateInput.value = rate;
+            }
+            if (select) {
+                select.addEventListener('change', onTypeChange);
+                onTypeChange();
+            }
+        })();
+    </script>
 }
