@@ -64,6 +64,12 @@ public class RoomChangeService : IRoomChangeService
 
         await _roomChangeUnitOfWork.SaveChangesAsync();
     }
+    
+    public async Task<IList<RoomChange>> GetHistoryAsync(int reservationId)
+    {
+        var items = await _roomChangeUnitOfWork.RoomChangeRepository.GetAsync(rc => rc, x => x.ReservationId == reservationId);
+        return items.OrderByDescending(x => x.ChangedOn).ToList();
+    }
 }
 
 

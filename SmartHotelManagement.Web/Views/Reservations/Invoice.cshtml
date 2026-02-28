@@ -1,0 +1,102 @@
+@model SmartHotelManagement.Model.Reservation
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["HeaderTitle"] = "Invoice";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Invoice";
+    var company = Configuration["Branding:CompanyName"] ?? "Smart Hotel Management";
+    var logo = Configuration["Branding:LogoUrl"] ?? Url.Content("~/dist/img/AdminLTELogo.png");
+    var total = (decimal)(ViewBag.Total ?? 0M);
+    var paid = (decimal)(ViewBag.Paid ?? 0M);
+    var due = (decimal)(ViewBag.Due ?? 0M);
+}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="@logo" alt="Logo" style="height:40px;width:40px;" class="mr-2" />
+                    <h3 class="card-title mb-0">@company</h3>
+                </div>
+                <button id="btnInvoicePdf" class="btn btn-secondary">Download PDF</button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Bill To</h5>
+                        <p>
+                            @((Model.Guest != null) ? (Model.Guest.FirstName + " " + Model.Guest.LastName) : "-")<br />
+                            Room: @Model.Room?.RoomNumber
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <h5>Invoice</h5>
+                        <p>
+                            Reservation: @Model.ReservationId<br />
+                            Date: @DateTime.Now.ToShortDateString()
+                        </p>
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Room booking (@Model.StayInNight nights)</td>
+                            <td class="text-right">@total.ToString("C")</td>
+                        </tr>
+                        <tr>
+                            <td>Paid</td>
+                            <td class="text-right">@paid.ToString("C")</td>
+                        </tr>
+                        <tr>
+                            <td>Due</td>
+                            <td class="text-right">@due.ToString("C")</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Status: @(due <= 0 ? "Paid" : "Due")</p>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Details" asp-route-id="@Model.ReservationId" class="btn btn-default">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        document.getElementById('btnInvoicePdf').addEventListener('click', function () {
+            var doc = {
+                content: [
+                    { text: '@company', style: 'header' },
+                    { text: 'Reservation: @Model.ReservationId', margin: [0, 0, 0, 5] },
+                    { text: 'Guest: @((Model.Guest != null) ? (Model.Guest.FirstName + " " + Model.Guest.LastName) : "-")', margin: [0, 0, 0, 10] },
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: ['*', 'auto'],
+                            body: [
+                                ['Description', 'Amount'],
+                                ['Room booking (@Model.StayInNight nights)', '@total.ToString("C")'],
+                                ['Paid', '@paid.ToString("C")'],
+                                ['Due', '@due.ToString("C")']
+                            ]
+                        }
+                    },
+                    { text: 'Status: ' + ('@(due <= 0 ? "Paid" : "Due")'), margin: [0, 10, 0, 0] }
+                ],
+                styles: { header: { fontSize: 18, bold: true } }
+            };
+            if (window.pdfMake) {
+                var fname = 'invoice-' + @Model.ReservationId + '.pdf';
+                pdfMake.createPdf(doc).download(fname);
+            } else {
+                alert('PDF library not available.');
+            }
+        });
+    })();
+</script>

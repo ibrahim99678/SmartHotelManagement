@@ -1,0 +1,47 @@
+@model IEnumerable<SmartHotelManagement.Model.Budget>
+@{
+    ViewData["HeaderTitle"] = "Budgets";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Budgets";
+    var catMap = (System.Collections.Generic.IDictionary<int, string>)ViewBag.CategoryMap;
+}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">Budgets</h3>
+                <div>
+                    <a class="btn btn-primary" asp-action="Create">Add Budget</a>
+                    <a class="btn btn-secondary" asp-action="Summary">Summary</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Currency</th>
+                            <th style="width:160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in Model)
+                        {
+                            <tr>
+                                <td>@b.PeriodStart.ToShortDateString() - @b.PeriodEnd.ToShortDateString()</td>
+                                <td>@(catMap.ContainsKey(b.CategoryId) ? catMap[b.CategoryId] : b.CategoryId.ToString())</td>
+                                <td>@b.Amount.ToString("C")</td>
+                                <td>@b.Currency</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@b.BudgetId">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

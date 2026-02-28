@@ -19,6 +19,14 @@
                 }
                 <input type="hidden" asp-for="ReservationId" />
                 <div class="card-body">
+                    <div class="alert alert-secondary">
+                        @{
+                            var statusText = ViewData["PaymentStatus"]?.ToString() ?? "Unknown";
+                            var dueText = ViewData["DueAmount"]?.ToString() ?? "0";
+                        }
+                        <strong>Payment:</strong> @statusText |
+                        <strong>Due:</strong> @dueText
+                    </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="GuestId">Guest</label>
                         <div class="col-sm-10">
@@ -85,15 +93,9 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Status">Status</label>
                         <div class="col-sm-10">
-                            <select asp-for="Status" class="form-control">
-                                <option value="">Select Status</option>
-                                <option>Pending</option>
-                                <option>Booked</option>
-                                <option>Confirmed</option>
-                                <option>CheckedIn</option>
-                                <option>CheckedOut</option>
-                                <option>Cancelled</option>
-                            </select>
+                            <select asp-for="Status"
+                                    class="form-control"
+                                    asp-items="ViewBag.StatusList"></select>
                         </div>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>

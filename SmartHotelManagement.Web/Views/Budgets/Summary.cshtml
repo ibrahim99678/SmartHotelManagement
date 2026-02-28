@@ -1,0 +1,48 @@
+@model IEnumerable<SmartHotelManagement.Model.Budget>
+@{
+    ViewData["HeaderTitle"] = "Budget Summary";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Budget Summary";
+    var catMap = (System.Collections.Generic.IDictionary<int, string>)ViewBag.CategoryMap;
+    var totals = (System.Collections.Generic.IDictionary<string, decimal>)ViewBag.ExpenseTotals;
+}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Period: @(((DateTime)ViewBag.PeriodStart).ToShortDateString()) - @(((DateTime)ViewBag.PeriodEnd).ToShortDateString())</h3>
+                <form class="form-inline" method="get">
+                    <input type="date" name="start" value="@(((DateTime)ViewBag.PeriodStart).ToString("yyyy-MM-dd"))" class="form-control mr-2" />
+                    <input type="date" name="end" value="@(((DateTime)ViewBag.PeriodEnd).ToString("yyyy-MM-dd"))" class="form-control mr-2" />
+                    <button class="btn btn-secondary" type="submit">Filter</button>
+                </form>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Budget</th>
+                            <th>Spent</th>
+                            <th>Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in Model)
+                        {
+                            var name = catMap.ContainsKey(b.CategoryId) ? catMap[b.CategoryId] : b.CategoryId.ToString();
+                            var spent = totals.ContainsKey(name) ? totals[name] : 0M;
+                            var remaining = b.Amount - spent;
+                            <tr>
+                                <td>@name</td>
+                                <td>@b.Amount.ToString("C")</td>
+                                <td>@spent.ToString("C")</td>
+                                <td class="@(remaining < 0 ? "text-danger" : "text-success")">@remaining.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,6 +4,7 @@ using SmartHotelManagement.BLL.Mapping;
 using SmartHotelManagement.Contract.Request;
 using SmartHotelManagement.DAL.Interfaces;
 using SmartHotelManagement.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,0 +1,49 @@
+@{
+    ViewData["HeaderTitle"] = "Finance Dashboard";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Finance";
+}
+<div class="row">
+    <div class="col-lg-4 col-12">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3><i class="fas fa-dollar-sign mr-1"></i>@($"{(decimal)ViewBag.Income:C}")</h3>
+                <p>Income (MTD)</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+            <a asp-action="Income" asp-controller="Accounts" class="small-box-footer">
+                View details <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-4 col-12">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3><i class="fas fa-dollar-sign mr-1"></i>@($"{(decimal)ViewBag.Expense:C}")</h3>
+                <p>Expenses (MTD)</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <a asp-action="Expenses" asp-controller="Accounts" class="small-box-footer">
+                View details <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-4 col-12">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3><i class="fas fa-dollar-sign mr-1"></i>@($"{(decimal)ViewBag.Net:C}")</h3>
+                <p>Net</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <a asp-action="Reports" asp-controller="Accounts" class="small-box-footer">
+                See reports <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+</div>

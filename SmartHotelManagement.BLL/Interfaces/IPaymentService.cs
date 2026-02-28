@@ -11,4 +11,6 @@ public interface IPaymentService
     Task<Result<decimal>> GetReservationDueAmountAsync(int reservationId);
     Task<Result<decimal>> GetMonthlySalesTotalAsync(DateTime monthStart, DateTime monthEnd);
     Task<Result<IDictionary<string, decimal>>> GetMonthlySalesByRoomTypeAsync(DateTime monthStart, DateTime monthEnd);
+    Task<Result<IList<Payment>>> GetPaymentsForReservationAsync(int reservationId);
+    Task<Result<IList<Payment>>> GetPaymentsForGuestAsync(int guestId);
 }

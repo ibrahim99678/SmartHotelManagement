@@ -1,0 +1,55 @@
+@model SmartHotelManagement.Model.Budget
+@{
+    ViewData["HeaderTitle"] = "Edit Budget";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Budget Edit";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Edit Budget</h3>
+            </div>
+            <form class="form-horizontal" asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="BudgetId" />
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="PeriodStart">Period Start</label>
+                        <div class="col-sm-10">
+                            <input asp-for="PeriodStart" type="date" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="PeriodEnd">Period End</label>
+                        <div class="col-sm-10">
+                            <input asp-for="PeriodEnd" type="date" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="CategoryId">Category</label>
+                        <div class="col-sm-10">
+                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Amount">Amount</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Amount" type="number" step="0.01" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Currency">Currency</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Currency" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info">Update</button>
+                    <a asp-action="Index" class="btn btn-default float-right">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

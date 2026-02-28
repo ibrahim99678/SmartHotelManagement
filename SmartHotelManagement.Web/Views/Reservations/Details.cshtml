@@ -37,6 +37,87 @@
                     <dd class="col-sm-10">@Model.Status</dd>
                 </dl>
                 <hr />
+                <h5>Payment History</h5>
+                @{
+                    var payments = ViewData["Payments"] as IList<SmartHotelManagement.Model.Payment>;
+                }
+                <table class="table table-sm table-bordered mb-3">
+                    <thead><tr><th>Date</th><th>Amount</th><th>Type</th><th>Status</th></tr></thead>
+                    <tbody>
+                    @if (payments != null && payments.Count > 0)
+                    {
+                        foreach (var p in payments)
+                        {
+                            <tr>
+                                <td>@p.PaymentDate.ToString("g")</td>
+                                <td>@($"{p.Amount:C}")</td>
+                                <td>@p.PaymentType</td>
+                                <td>@p.Status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="4" class="text-center">No payments recorded</td></tr>
+                    }
+                    </tbody>
+                </table>
+                <h5>Room Change History</h5>
+                @{
+                    var roomChanges = ViewData["RoomChanges"] as IList<SmartHotelManagement.Model.RoomChange>;
+                    var roomMap = ViewBag.RoomMap as System.Collections.Generic.IDictionary<int, string>;
+                }
+                <table class="table table-sm table-bordered mb-3">
+                    <thead><tr><th>Date</th><th>Old Room</th><th>New Room</th><th>Reason</th></tr></thead>
+                    <tbody>
+                    @if (roomChanges != null && roomChanges.Count > 0)
+                    {
+                        foreach (var c in roomChanges)
+                        {
+                            var oldNum = (roomMap != null && roomMap.ContainsKey(c.OldRoomId)) ? roomMap[c.OldRoomId] : c.OldRoomId.ToString();
+                            var newNum = (roomMap != null && roomMap.ContainsKey(c.NewRoomId)) ? roomMap[c.NewRoomId] : c.NewRoomId.ToString();
+                            <tr>
+                                <td>@c.ChangedOn.ToString("g")</td>
+                                <td>@oldNum</td>
+                                <td>@newNum</td>
+                                <td>@c.Reason</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="4" class="text-center">No room changes</td></tr>
+                    }
+                    </tbody>
+                </table>
+                <h5>Guest Reservations</h5>
+                @{
+                    var guestRes = ViewData["GuestReservations"] as IList<SmartHotelManagement.Model.Reservation>;
+                }
+                <table class="table table-sm table-bordered">
+                    <thead><tr><th>Reservation</th><th>Room</th><th>In</th><th>Out</th><th>Total</th><th>Status</th></tr></thead>
+                    <tbody>
+                    @if (guestRes != null && guestRes.Count > 0)
+                    {
+                        foreach (var r in guestRes)
+                        {
+                            <tr>
+                                <td>@r.ReservationId</td>
+                                <td>@r.Room?.RoomNumber</td>
+                                <td>@r.CheckInDate.ToShortDateString()</td>
+                                <td>@(r.CheckOutDate.HasValue ? r.CheckOutDate.Value.ToShortDateString() : "-")</td>
+                                <td>@($"{(r.TotalAmount ?? 0):C}")</td>
+                                <td>@r.Status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="6" class="text-center">No other reservations</td></tr>
+                    }
+                    </tbody>
+                </table>
+                <hr />
                 <h5>Quick Payment</h5>
                 <form asp-action="AddPayment" method="post" class="mt-2">
                     @Html.AntiForgeryToken()
@@ -92,6 +173,11 @@
             </div>
             <div class="card-footer">
                 <a asp-action="Edit" asp-route-id="@Model?.ReservationId" class="btn btn-info">Edit</a>
+                <form asp-action="CompleteReservation" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ReservationId" />
+                    <button type="submit" class="btn btn-success">Complete Reservation</button>
+                </form>
                 <a asp-action="Index" class="btn btn-default float-right">Back to List</a>
             </div>
         </div>

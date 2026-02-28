@@ -1,0 +1,43 @@
+@model IEnumerable<SmartHotelManagement.Model.Category>
+@{
+    ViewData["HeaderTitle"] = "Categories";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Finance Categories";
+}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">Categories</h3>
+                <a class="btn btn-primary" asp-action="Create">Add Category</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Kind</th>
+                            <th>Parent</th>
+                            <th>Active</th>
+                            <th style="width:160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model)
+                        {
+                            <tr>
+                                <td>@x.Name</td>
+                                <td>@x.Kind</td>
+                                <td>@x.ParentCategoryId</td>
+                                <td>@(x.IsActive ? "Yes" : "No")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@x.CategoryId">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>

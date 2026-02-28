@@ -12,11 +12,13 @@ public class PaymentService : IPaymentService
 {
     private readonly IPaymentUnitOfWork _paymentUnitOfWork;
     private readonly IReservationUnitOfWork _reservationUnitOfWork;
+    private readonly IRoomUnitOfWork _roomUnitOfWork;
 
-    public PaymentService(IPaymentUnitOfWork paymentUnitOfWork, IReservationUnitOfWork reservationUnitOfWork)
+    public PaymentService(IPaymentUnitOfWork paymentUnitOfWork, IReservationUnitOfWork reservationUnitOfWork, IRoomUnitOfWork roomUnitOfWork)
     {
         _paymentUnitOfWork = paymentUnitOfWork ?? throw new ArgumentNullException(nameof(paymentUnitOfWork));
         _reservationUnitOfWork = reservationUnitOfWork ?? throw new ArgumentNullException(nameof(reservationUnitOfWork));
+        _roomUnitOfWork = roomUnitOfWork ?? throw new ArgumentNullException(nameof(roomUnitOfWork));
     }
 
     public async Task<Result<int>> AddPaymentAsync(int reservationId, decimal amount, PaymentType paymentType, string? bankName)
@@ -42,6 +44,25 @@ public class PaymentService : IPaymentService
         if (!saved)
         {
             return Result<int>.FailResult("Failed to record payment.");
+        }
+        var statusCheck = await GetReservationPaymentStatusAsync(reservationId);
+        if (statusCheck.Success && statusCheck.Data == PaymentStatus.Paid)
+        {
+            var res = await _reservationUnitOfWork.ReservationRepository.GetByIdAsync(reservationId);
+            if (res != null)
+            {
+                res.IsCheckedOut = true;
+                res.Status = "CheckedOut";
+                await _reservationUnitOfWork.ReservationRepository.UpdateAsync(res);
+                await _reservationUnitOfWork.SaveChangesAsync();
+                var room = await _roomUnitOfWork.RoomRepository.GetByIdAsync(res.RoomId);
+                if (room != null)
+                {
+                    room.Status = RoomStatus.Available;
+                    await _roomUnitOfWork.RoomRepository.UpdateAsync(room);
+                    await _roomUnitOfWork.SaveChangesAsync();
+                }
+            }
         }
         return Result<int>.SuccessResult(payment.PaymentId);
     }
@@ -93,5 +114,20 @@ public class PaymentService : IPaymentService
             result[roomTypeName] += pay.Amount;
         }
         return Result<IDictionary<string, decimal>>.SuccessResult(result);
+    }
+
+    public async Task<Result<IList<Payment>>> GetPaymentsForReservationAsync(int reservationId)
+    {
+        var items = await _paymentUnitOfWork.PaymentRepository.GetAsync(p => p, x => x.ReservationId == reservationId);
+        return Result<IList<Payment>>.SuccessResult(items.OrderByDescending(p => p.PaymentDate).ToList());
+    }
+
+    public async Task<Result<IList<Payment>>> GetPaymentsForGuestAsync(int guestId)
+    {
+        var reservations = await _reservationUnitOfWork.ReservationRepository.GetAsync(r => r.ReservationId, x => x.GuestId == guestId);
+        var resIds = reservations.ToList();
+        if (resIds.Count == 0) return Result<IList<Payment>>.SuccessResult(new List<Payment>());
+        var items = await _paymentUnitOfWork.PaymentRepository.GetAsync(p => p, x => resIds.Contains(x.ReservationId));
+        return Result<IList<Payment>>.SuccessResult(items.OrderByDescending(p => p.PaymentDate).ToList());
     }
 }

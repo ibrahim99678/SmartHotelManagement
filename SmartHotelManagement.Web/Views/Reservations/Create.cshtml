@@ -1,4 +1,5 @@
 @model SmartHotelManagement.Model.Reservation
+@using SmartHotelManagement.Model
 @{
     ViewData["HeaderTitle"] = "Create Reservation";
     ViewData["BreadcrumbFirst"] = "Home";
@@ -26,9 +27,28 @@
                         <span asp-validation-for="GuestId" class="text-danger"></span>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Room Type</label>
+                        <div class="col-sm-10">
+                            <select id="RoomTypeId" class="form-control" asp-items="ViewBag.RoomTypeId">
+                                <option value="">All Types</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="RoomId">Room</label>
                         <div class="col-sm-10">
-                            <select asp-for="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
+                            @{
+                                var roomsList = ViewBag.Rooms as IList<SmartHotelManagement.Model.Room>;
+                            }
+                            <select asp-for="RoomId" class="form-control" id="RoomId">
+                                @if (roomsList != null)
+                                {
+                                    foreach (var r in roomsList)
+                                    {
+                                        <option value="@r.RoomId" data-type="@r.RoomTypeId">@r.RoomNumber</option>
+                                    }
+                                }
+                            </select>
                         </div>
                         <span asp-validation-for="RoomId" class="text-danger"></span>
                     </div>                  
@@ -77,22 +97,16 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="TotalAmount">Total Amount</label>
                         <div class="col-sm-10">
-                            <input type="number" asp-for="TotalAmount" class="form-control" placeholder="Total Amount" />
+                            <input type="number" asp-for="TotalAmount" class="form-control" placeholder="Total Amount" readonly />
                         </div>
                         <span asp-validation-for="TotalAmount" class="text-danger"></span>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Status">Status</label>
                         <div class="col-sm-10">
-                            <select asp-for="Status" class="form-control">
-                                <option value="">Select Status</option>
-                                <option>Pending</option>
-                                <option>Booked</option>
-                                <option>Confirmed</option>
-                                <option>CheckedIn</option>
-                                <option>CheckedOut</option>
-                                <option>Cancelled</option>
-                            </select>
+                            <select asp-for="Status"
+                                    class="form-control"
+                                    asp-items="ViewBag.StatusList"></select>
                         </div>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
@@ -125,13 +139,36 @@
             var inEl = document.getElementById('CheckInDate');
             var outEl = document.getElementById('CheckOutDate');
             var nightEl = document.getElementById('StayInNight');
+            var roomEl = document.getElementById('RoomId');
+            var totalEl = document.querySelector('input[name="TotalAmount"]');
             var saveBtn = document.getElementById('btnSave');
+            var typeEl = document.getElementById('RoomTypeId');
+            var rates = [];
+            @if (ViewBag.RoomRates != null)
+            {
+                foreach (var r in (IEnumerable<dynamic>)ViewBag.RoomRates)
+                {
+                    @:rates.push({ id: @r.RoomId, rate: @r.Rate });
+                }
+            }
+            function findRate(roomId) {
+                var found = rates.find(function (x) { return x.id == roomId; });
+                return found ? Number(found.rate) : 0;
+            }
             function calc() {
                 if (!inEl.value || !outEl.value) return;
                 var inDate = new Date(inEl.value);
                 var outDate = new Date(outEl.value);
                 var diff = Math.round((outDate - inDate) / (1000 * 60 * 60 * 24));
                 nightEl.value = diff > 0 ? diff : 0;
+                updateTotal();
+            }
+            function updateTotal() {
+                var nights = Number(nightEl.value || 0);
+                var roomId = Number(roomEl ? roomEl.value : 0);
+                var rate = findRate(roomId);
+                var total = nights * rate;
+                if (totalEl) totalEl.value = total;
             }
             function validate() {
                 if (!inEl.value || !outEl.value) { saveBtn.disabled = true; return; }
@@ -139,9 +176,31 @@
                 var outDate = new Date(outEl.value);
                 saveBtn.disabled = !(outDate > inDate);
             }
+            function filterRooms() {
+                var typeId = typeEl ? typeEl.value : "";
+                var opts = document.querySelectorAll('#RoomId option');
+                opts.forEach(function(opt){
+                    var t = opt.getAttribute('data-type');
+                    if (!typeId || typeId === "") {
+                        opt.style.display = '';
+                    } else {
+                        opt.style.display = (t === typeId) ? '' : 'none';
+                    }
+                });
+                var firstVisible = Array.prototype.find.call(opts, function (opt) { return opt.style.display !== 'none'; });
+                if (firstVisible) {
+                    document.getElementById('RoomId').value = firstVisible.value;
+                }
+                updateTotal();
+            }
             inEl.addEventListener('change', function(){ calc(); validate(); });
             outEl.addEventListener('change', function(){ calc(); validate(); });
+            nightEl.addEventListener('input', updateTotal);
+            if (roomEl) roomEl.addEventListener('change', updateTotal);
+            if (typeEl) typeEl.addEventListener('change', filterRooms);
             validate();
+            updateTotal();
+            filterRooms();
         })();
     </script>
 }

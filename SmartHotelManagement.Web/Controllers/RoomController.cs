@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -124,6 +124,8 @@ public class RoomController : Controller
         if (roomResult.Success && roomResult.Data != null)
         {
             ViewData["RoomTypeId"] = new SelectList(_roomTypeService.GetAllAsync().Result.Data, "RoomTypeId", "RoomTypeName", roomResult.Data.RoomTypeId);
+            var typesResult = await _roomTypeService.GetAllAsync();
+            ViewBag.RoomTypeName = typesResult.Success ? typesResult.Data : new List<RoomType>();
             return View(roomResult.Data);
         }
         else

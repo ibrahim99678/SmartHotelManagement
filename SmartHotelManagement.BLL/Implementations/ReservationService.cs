@@ -58,6 +58,15 @@ namespace SmartHotelManagement.BLL.Implementations
                 newReservation.TotalAmount = rate * nights;
                 await _reservationUnitOfWork.ReservationRepository.AddAsync(newReservation);
                 await _reservationUnitOfWork.SaveChangesAsync();
+                if (room != null)
+                {
+                    if (newReservation.IsCheckedIn && !newReservation.IsCheckedOut)
+                    {
+                        room.Status = RoomStatus.Occupied;
+                        await _roomUnitOfWork.RoomRepository.UpdateAsync(room);
+                        await _roomUnitOfWork.SaveChangesAsync();
+                    }
+                }
                 return Result<int>.SuccessResult(newReservation.ReservationId);
             }
             catch (Exception)
@@ -141,6 +150,19 @@ namespace SmartHotelManagement.BLL.Implementations
             existing.IsCheckedOut = reservation.IsCheckedOut;
             await _reservationUnitOfWork.ReservationRepository.UpdateAsync(existing);
             var saved = await _reservationUnitOfWork.SaveChangesAsync();
+            if (room != null)
+            {
+                if (existing.IsCheckedOut)
+                {
+                    room.Status = RoomStatus.Available;
+                }
+                else if (existing.IsCheckedIn)
+                {
+                    room.Status = RoomStatus.Occupied;
+                }
+                await _roomUnitOfWork.RoomRepository.UpdateAsync(room);
+                await _roomUnitOfWork.SaveChangesAsync();
+            }
             if (!saved)
             {
                 return Result<int>.FailResult("Failed to update reservation.");

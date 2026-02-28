@@ -1,0 +1,91 @@
+@model SmartHotelManagement.Model.FinancialTransaction
+@{
+    ViewData["HeaderTitle"] = "Add Income";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Income Add";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Add Income</h3>
+            </div>
+            <form class="form-horizontal" asp-action="AddIncome" method="post">
+                @Html.AntiForgeryToken()
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Date">Date</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Date" type="datetime-local" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Amount">Amount</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Amount" type="number" step="0.01" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Currency">Currency</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Currency" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="CategoryId">Category</label>
+                        <div class="col-sm-10">
+                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="PaymentMethodId">Payment Method</label>
+                        <div class="col-sm-10">
+                            <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="ReservationId">Reservation</label>
+                        <div class="col-sm-10">
+                            <select asp-for="ReservationId" class="form-control" asp-items="ViewBag.ReservationId">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="GuestId">Guest</label>
+                        <div class="col-sm-10">
+                            <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Description">Description</label>
+                        <div class="col-sm-10">
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input asp-for="IsRecurring" type="checkbox" class="form-check-input" />
+                                <label class="form-check-label" asp-for="IsRecurring">Recurring</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="RecurrenceRule">Recurrence Rule</label>
+                        <div class="col-sm-10">
+                            <input asp-for="RecurrenceRule" class="form-control" placeholder="monthly | weekly | daily" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info">Save</button>
+                    <a asp-action="Income" class="btn btn-default float-right">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

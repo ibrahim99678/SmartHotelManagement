@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,4 +9,5 @@ namespace SmartHotelManagement.BLL.Interfaces;
 public interface IRoomChangeService
 {
     Task ChangeRoomAsync(int reservationId, int newRoomId, string reason);
+    Task<IList<SmartHotelManagement.Model.RoomChange>> GetHistoryAsync(int reservationId);
 }

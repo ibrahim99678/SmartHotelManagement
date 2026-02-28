@@ -1,0 +1,179 @@
+@{
+    ViewData["HeaderTitle"] = "Finance Reports";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Reports";
+    var income = (decimal)ViewBag.Income;
+    var expense = (decimal)ViewBag.Expense;
+    var net = income - expense;
+    var incomeBy = (System.Collections.Generic.IDictionary<string, decimal>)ViewBag.IncomeByCategory;
+    var expenseBy = (System.Collections.Generic.IDictionary<string, decimal>)ViewBag.ExpenseByCategory;
+}
+<div class="row mb-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Summary (@(((DateTime)ViewBag.Start).ToShortDateString()) - @(((DateTime)ViewBag.End).ToShortDateString()))</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" id="btnCsv">Export CSV</button>
+                    <button type="button" class="btn btn-secondary" id="btnPdf">Export PDF</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card stat-card sc-success">
+                            <div class="card-body">
+                                <h6 class="card-title text-uppercase mb-1">Income</h6>
+                                <h2 class="mb-0">@income.ToString("C")</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stat-card sc-warning">
+                            <div class="card-body">
+                                <h6 class="card-title text-uppercase mb-1">Expenses</h6>
+                                <h2 class="mb-0">@expense.ToString("C")</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stat-card sc-info">
+                            <div class="card-body">
+                                <h6 class="card-title text-uppercase mb-1">Net</h6>
+                                <h2 class="mb-0">@net.ToString("C")</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h5>Income by Category</h5>
+                        <canvas id="incomeChart" height="160"></canvas>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>Category</th><th>Total</th></tr></thead>
+                            <tbody>
+                            @foreach (var kv in incomeBy)
+                            {
+                                <tr><td>@kv.Key</td><td>@kv.Value.ToString("C")</td></tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Expenses by Category</h5>
+                        <canvas id="expenseChart" height="160"></canvas>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>Category</th><th>Total</th></tr></thead>
+                            <tbody>
+                            @foreach (var kv in expenseBy)
+                            {
+                                <tr><td>@kv.Key</td><td>@kv.Value.ToString("C")</td></tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var incomeData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(incomeBy));
+        var expenseData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(expenseBy));
+        var incomeLabels = Object.keys(incomeData);
+        var incomeValues = incomeLabels.map(k => incomeData[k]);
+        var expenseLabels = Object.keys(expenseData);
+        var expenseValues = expenseLabels.map(k => expenseData[k]);
+
+        if (window.Chart) {
+            var ctxInc = document.getElementById('incomeChart').getContext('2d');
+            new Chart(ctxInc, {
+                type: 'bar',
+                data: {
+                    labels: incomeLabels,
+                    datasets: [{
+                        label: 'Income',
+                        backgroundColor: '#28a745',
+                        data: incomeValues
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: { display: false }
+                }
+            });
+            var ctxExp = document.getElementById('expenseChart').getContext('2d');
+            new Chart(ctxExp, {
+                type: 'bar',
+                data: {
+                    labels: expenseLabels,
+                    datasets: [{
+                        label: 'Expenses',
+                        backgroundColor: '#ffc107',
+                        data: expenseValues
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: { display: false }
+                }
+            });
+        }
+
+        document.getElementById('btnCsv').addEventListener('click', function () {
+            var rows = [['Type', 'Category', 'Total']];
+            incomeLabels.forEach(function (l, i) { rows.push(['Income', l, incomeValues[i]]); });
+            expenseLabels.forEach(function (l, i) { rows.push(['Expense', l, expenseValues[i]]); });
+            var csv = rows.map(r => r.join(',')).join('\\n');
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'finance_report.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('btnPdf').addEventListener('click', function () {
+            var doc = {
+                content: [
+                    { text: 'Finance Report', style: 'header' },
+                    { text: 'Period: @(((DateTime)ViewBag.Start).ToShortDateString()) - @(((DateTime)ViewBag.End).ToShortDateString())', margin: [0, 0, 0, 10] },
+                    { text: 'Summary', style: 'subheader' },
+                    { ul: [
+                        'Income: @income.ToString("C")',
+                        'Expenses: @expense.ToString("C")',
+                        'Net: @net.ToString("C")'
+                    ]},
+                    { text: 'Income by Category', style: 'subheader', margin: [0, 10, 0, 5] },
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: ['*', 'auto'],
+                            body: [['Category', 'Total']].concat(incomeLabels.map(function (l, i) { return [l, incomeValues[i]]; }))
+                        }
+                    },
+                    { text: 'Expenses by Category', style: 'subheader', margin: [0, 10, 0, 5] },
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: ['*', 'auto'],
+                            body: [['Category', 'Total']].concat(expenseLabels.map(function (l, i) { return [l, expenseValues[i]]; }))
+                        }
+                    }
+                ],
+                styles: {
+                    header: { fontSize: 18, bold: true },
+                    subheader: { fontSize: 14, bold: true }
+                }
+            };
+            if (window.pdfMake) {
+                pdfMake.createPdf(doc).download('finance_report.pdf');
+            } else {
+                alert('PDF library not available.');
+            }
+        });
+    })();
+</script>

@@ -18,6 +18,10 @@ namespace SmartHotelManagement.DAL.Context
         public DbSet<RoomChange> RoomChanges { get; set; } = null!;
         public DbSet<Employee> Employees { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Budget> Budgets { get; set; }
 
 
         //DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder<SmartHotelDbContext>();
@@ -46,6 +50,15 @@ namespace SmartHotelManagement.DAL.Context
             modelBuilder.Entity<RoomChange>()
                 .Property(rc => rc.Reason)
                 .HasMaxLength(500);
+
+            modelBuilder.Entity<FinancialTransaction>()
+                .HasKey(ft => ft.TransactionId);
+            modelBuilder.Entity<FinancialTransaction>()
+                .Property(ft => ft.Amount)
+                .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Budget>()
+                .Property(b => b.Amount)
+                .HasColumnType("decimal(18,2)");
 
             
         }

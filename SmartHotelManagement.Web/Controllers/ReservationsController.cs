@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,6 +58,17 @@ namespace SmartHotelManagement.Web.Controllers
                 ViewData["PaymentStatus"] = statusResult.Data;
             if (dueResult.Success)
                 ViewData["DueAmount"] = dueResult.Data;
+            var paymentsResult = await _paymentService.GetPaymentsForReservationAsync(reservation.ReservationId);
+            if (paymentsResult.Success)
+                ViewData["Payments"] = paymentsResult.Data;
+            var guestPayments = await _paymentService.GetPaymentsForGuestAsync(reservation.GuestId);
+            if (guestPayments.Success)
+                ViewData["GuestPayments"] = guestPayments.Data;
+            var guestReservations = await _reservationService.GetAllAsync();
+            ViewData["GuestReservations"] = guestReservations.Success
+                ? guestReservations.Data.Where(r => r.GuestId == reservation.GuestId && r.ReservationId != reservation.ReservationId)
+                    .OrderByDescending(r => r.CheckInDate).Take(5).ToList()
+                : new List<Reservation>();
 
             var roomsResult = await _roomService.GetAllAsync();
             var reservationsResult = await _reservationService.GetAllAsync();
@@ -75,6 +86,10 @@ namespace SmartHotelManagement.Web.Controllers
                 .OrderBy(r => r.RoomNumber)
                 .ToList();
             ViewData["AvailableRooms"] = new SelectList(availableRooms, "RoomId", "RoomNumber");
+            var roomMap = allRooms.ToDictionary(r => r.RoomId, r => r.RoomNumber);
+            ViewBag.RoomMap = roomMap;
+            var changes = await _roomChangeService.GetHistoryAsync(reservation.ReservationId);
+            ViewData["RoomChanges"] = changes;
 
             return View(reservation);
         }
@@ -86,6 +101,18 @@ namespace SmartHotelManagement.Web.Controllers
             var rooms = _roomService.GetAllAsync().Result.Data;
             ViewData["GuestId"] = new SelectList(guests, "GuestId", "FirstName");
             ViewData["RoomId"] = new SelectList(rooms, "RoomId", "RoomNumber");
+            ViewBag.Rooms = rooms;
+            var roomTypes = rooms?.Where(r => r.RoomType != null)
+                                  .Select(r => r.RoomType!)
+                                  .GroupBy(rt => rt.RoomTypeId)
+                                  .Select(g => g.First())
+                                  .OrderBy(rt => rt.RoomTypeName)
+                                  .ToList() ?? new List<RoomType>();
+            ViewData["RoomTypeId"] = new SelectList(roomTypes, "RoomTypeId", "RoomTypeName");
+            var statusItems = Enum.GetValues(typeof(SmartHotelManagement.Model.RoomStatus))
+                                  .Cast<SmartHotelManagement.Model.RoomStatus>()
+                                  .Select(s => new SelectListItem { Value = s.ToString(), Text = s.ToString() });
+            ViewBag.StatusList = statusItems;
             ViewBag.RoomRates = rooms?.Select(r => new { r.RoomId, Rate = r.BaseRate }).ToList();
             return View();
         }
@@ -148,6 +175,19 @@ namespace SmartHotelManagement.Web.Controllers
             var rooms = _roomService.GetAllAsync().Result.Data;
             ViewData["GuestId"] = new SelectList(guests, "GuestId", "FirstName", reservation.GuestId);
             ViewData["RoomId"] = new SelectList(rooms, "RoomId", "RoomNumber", reservation.RoomId);
+            var statusItems = Enum.GetValues(typeof(SmartHotelManagement.Model.RoomStatus))
+                                  .Cast<SmartHotelManagement.Model.RoomStatus>()
+                                  .Select(s => new SelectListItem { Value = s.ToString(), Text = s.ToString() });
+            ViewBag.StatusList = statusItems;
+            var statusResult = await _paymentService.GetReservationPaymentStatusAsync(reservation.ReservationId);
+            var dueResult = await _paymentService.GetReservationDueAmountAsync(reservation.ReservationId);
+            if (statusResult.Success)
+                ViewData["PaymentStatus"] = statusResult.Data;
+            if (dueResult.Success)
+                ViewData["DueAmount"] = dueResult.Data;
+            var paymentsResult = await _paymentService.GetPaymentsForReservationAsync(reservation.ReservationId);
+            if (paymentsResult.Success)
+                ViewData["Payments"] = paymentsResult.Data;
             return View(reservation);
         }
 
@@ -264,6 +304,64 @@ namespace SmartHotelManagement.Web.Controllers
             ViewData["PaymentStatus"] = statusResult.Data;
             ViewData["DueAmount"] = dueResult.Data;
             return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteReservation(int id)
+        {
+            var reservationResult = await _reservationService.GetByIdAsync(id);
+            if (!reservationResult.Success || reservationResult.Data == null)
+            {
+                TempData["ErrorMessage"] = reservationResult.Error;
+                return RedirectToAction(nameof(Index));
+            }
+            var reservation = reservationResult.Data;
+            var dueResult = await _paymentService.GetReservationDueAmountAsync(id);
+            if (!dueResult.Success)
+            {
+                TempData["ErrorMessage"] = dueResult.Error;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            var due = dueResult.Data;
+            if (due > 0)
+            {
+                var payRes = await _paymentService.AddPaymentAsync(id, due, PaymentType.Cash, null);
+                if (!payRes.Success)
+                {
+                    TempData["ErrorMessage"] = payRes.Error;
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+            }
+            reservation.IsCheckedOut = true;
+            reservation.Status = "CheckedOut";
+            var upd = await _reservationService.UpdateAsync(reservation);
+            if (!upd.Success)
+            {
+                TempData["ErrorMessage"] = upd.Error;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            return RedirectToAction(nameof(Invoice), new { id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Invoice(int id)
+        {
+            var reservationResult = await _reservationService.GetByIdAsync(id);
+            if (!reservationResult.Success || reservationResult.Data == null)
+            {
+                TempData["ErrorMessage"] = reservationResult.Error;
+                return RedirectToAction(nameof(Index));
+            }
+            var reservation = reservationResult.Data;
+            var dueResult = await _paymentService.GetReservationDueAmountAsync(id);
+            var due = dueResult.Success ? dueResult.Data : 0;
+            var total = reservation.TotalAmount ?? 0;
+            var paid = total - due;
+            ViewBag.Total = total;
+            ViewBag.Paid = paid < 0 ? 0 : paid;
+            ViewBag.Due = due < 0 ? 0 : due;
+            return View(reservation);
         }
     }
 }

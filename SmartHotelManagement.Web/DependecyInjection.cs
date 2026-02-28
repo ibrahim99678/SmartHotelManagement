@@ -29,6 +29,11 @@ namespace SmartHotelManagement.Web
             services.AddScoped<IAuditLogUnitOfWork, AuditLogUnitOfWork>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IRoomUnitOfWork, RoomUnitOfWork>();
+            services.AddScoped<IFinanceTransactionRepository, FinanceTransactionRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+            services.AddScoped<IBudgetRepository, BudgetRepository>();
+            services.AddScoped<IFinanceUnitOfWork, FinanceUnitOfWork>();
 
             return services;
         }
@@ -43,6 +48,7 @@ namespace SmartHotelManagement.Web
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IAuditLogService, AuditLogService>();
+            services.AddScoped<IFinanceService, FinanceService>();
 
             return services;
         }

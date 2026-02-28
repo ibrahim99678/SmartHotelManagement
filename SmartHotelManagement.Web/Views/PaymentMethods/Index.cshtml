@@ -1,0 +1,43 @@
+@model IEnumerable<SmartHotelManagement.Model.PaymentMethod>
+@{
+    ViewData["HeaderTitle"] = "Payment Methods";
+    ViewData["BreadcrumbFirst"] = "Home";
+    ViewData["BreadcrumbActive"] = "Payment Methods";
+}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">Payment Methods</h3>
+                <a class="btn btn-primary" asp-action="Create">Add Method</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Provider</th>
+                            <th>Masked Account</th>
+                            <th>Active</th>
+                            <th style="width:160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model)
+                        {
+                            <tr>
+                                <td>@x.Name</td>
+                                <td>@x.Provider</td>
+                                <td>@x.MaskedAccount</td>
+                                <td>@(x.IsActive ? "Yes" : "No")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@x.PaymentMethodId">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>

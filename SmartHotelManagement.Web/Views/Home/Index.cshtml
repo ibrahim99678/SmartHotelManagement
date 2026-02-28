@@ -4,35 +4,55 @@
 }
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card sc-primary">
                 <div class="card-body">
-                    <h6 class="card-title">Available Rooms</h6>
-                    <h2>@Model.AvailableRoomsCount</h2>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title text-uppercase mb-1">Available Rooms</h6>
+                            <h2 class="mb-0">@Model.AvailableRoomsCount</h2>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-bed"></i></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card sc-success">
                 <div class="card-body">
-                    <h6 class="card-title">Employees</h6>
-                    <h2>@Model.EmployeeCount</h2>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title text-uppercase mb-1">Employees</h6>
+                            <h2 class="mb-0">@Model.EmployeeCount</h2>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card sc-warning">
                 <div class="card-body">
-                    <h6 class="card-title">Monthly Sales</h6>
-                    <h2>@Model.MonthlySalesTotal.ToString("C")</h2>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title text-uppercase mb-1">Monthly Sales</h6>
+                            <h2 class="mb-0">@Model.MonthlySalesTotal.ToString("C")</h2>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card sc-info">
                 <div class="card-body">
-                    <h6 class="card-title">Today's Reservations</h6>
-                    <h2>@Model.TodayReservations.Count</h2>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title text-uppercase mb-1">Today’s Reservations</h6>
+                            <h2 class="mb-0">@Model.TodayReservations.Count</h2>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,3 +187,14 @@
         });
     })();
 </script>
+<style>
+    .stat-card{color:#fff;border:0;border-radius:.75rem;box-shadow:0 10px 20px rgba(0,0,0,.08)}
+    .stat-card .card-body{padding:1rem 1.25rem}
+    .stat-icon{font-size:2.25rem;opacity:.9}
+    .sc-primary{background:linear-gradient(135deg,#4e54c8,#8f94fb)}
+    .sc-success{background:linear-gradient(135deg,#11998e,#38ef7d)}
+    .sc-warning{background:linear-gradient(135deg,#f7971e,#ffd200)}
+    .sc-info{background:linear-gradient(135deg,#00c6ff,#0072ff)}
+    @@media (max-width: 576px){.stat-icon{font-size:1.75rem}}
+    .card-title{letter-spacing:.04em}
+</style>
